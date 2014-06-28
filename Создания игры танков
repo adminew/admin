@@ -1,0 +1,654 @@
+// ConsoleApplication4.cpp: определяет точку входа для консольного приложения.
+//
+
+#undef UNICODE
+#undef _UNICODE
+#include "stdafx.h"
+#include <iostream>
+#include <GL\glut.h>
+#include <ctime>
+#include <glut.h>
+#include <cstdlib>
+#include <random>
+#include <map>
+
+
+using namespace std;
+//#include "libracy_drawing_models.h"
+struct di{
+	int DivX;
+	int DivY;
+};
+bool b1=true,b2=false,b=true;
+int mat[800][600];
+char p='w';
+int maxi=4;
+int tank;
+
+
+
+class tanks 
+{
+public:	
+	di po;
+	di max;
+	di min;
+	di vis;
+	di KoorVis;
+    int size;
+	bool strelnul;
+	tanks(int x,int y)
+	{
+		strelnul=false;
+		size=20;
+		po.DivX=x;
+		po.DivY=y;
+		vis.DivX=0;
+		vis.DivY=0;
+		KoorVis.DivX=-10;
+		KoorVis.DivY=-10; 
+		max.DivX=x+size/2;
+		min.DivX=x-size/2;
+		max.DivY=y+size/2;
+		min.DivY=y-size/2;
+	}
+public:	void tankse(int x,int y)
+	{
+		size=20;
+		po.DivX=x;
+		po.DivY=y;
+		max.DivX=x+size/2;
+		min.DivX=x-size/2;
+		max.DivY=y+size/2;
+		min.DivY=y-size/2;
+}
+	public: bool raz(int x,int y)
+	{
+		if (x!=y) 
+		return true;
+		else return false;
+	}
+	void vistrel(char p){
+		switch (p)
+		{
+		case 'w':
+			strelnul=true;
+			vis.DivY=5;
+			vis.DivX=0;
+			KoorVis.DivY=max.DivY+size/4+1;
+			KoorVis.DivX=po.DivX;
+			break;
+		case 'd':
+			strelnul=true;
+			vis.DivY=0;
+			vis.DivX=5;
+			KoorVis.DivX=max.DivX+size/4+1;
+			KoorVis.DivY=po.DivY;
+			break;
+		case 's':
+			strelnul=true;
+			vis.DivY=-5;
+			vis.DivX=0;
+			KoorVis.DivY=min.DivY-size/4-1;
+			KoorVis.DivX=po.DivX;
+			break;
+		case 'a':
+			strelnul=true;
+			vis.DivY=0;
+			vis.DivX=-5;
+			KoorVis.DivX=min.DivX-size/4-1;
+			KoorVis.DivY=po.DivY;
+			break;
+		default:
+			break;
+		}
+	}
+public: void obnulenie( tanks &poq){
+		for (int i=poq.min.DivX;i<poq.max.DivX;i++)
+			for(int j=poq.min.DivY;j<poq.max.DivY;j++)
+				mat[i][j]=0;
+	}
+		void PopalVTank(int x,int y,bool &b3,vector <tanks> &mas){
+		bool b4=true;
+		int m=30;
+		for (int i=0;i<3;i++)
+			if (x<=mas[i].max.DivX && x>=mas[i].min.DivX && y<=mas[i].max.DivY && y>=mas[i].min.DivY)
+			{
+				obnulenie(mas[i]);
+				b4=false;
+				b3=false;
+				if (i!=0) m=550;
+				mas[i].tankse(30+i*200,m);
+				strelnul=false;
+				KoorVis.DivX=-15;
+				KoorVis.DivY=-15;
+				glVertex2f(-15,-15);
+				
+			}
+	}
+	void polet(vector <tanks> &mas)
+	{
+		bool b3=true;
+		int f;
+//		cin >>f;
+		glBegin(GL_POINTS);
+		if ((KoorVis.DivX>800 || KoorVis.DivY>600) || (KoorVis.DivX<0 || KoorVis.DivY<0)){
+			b3=false;
+			strelnul=false;
+			KoorVis.DivX=-15;
+			KoorVis.DivY=-15;
+			glVertex2f(-15,-15);
+		}
+		else if (vis.DivY>0 || vis.DivX>0) 
+		{
+			for (int i=KoorVis.DivX-vis.DivX; i<=KoorVis.DivX; i++)
+				for(int j=KoorVis.DivY-vis.DivY;j<=KoorVis.DivY; j++)
+					if (mat[i][j]!=0 && b3)
+						if (mat[i][j]==1)  PopalVTank(i,j,b3,mas);
+						else
+						{
+						for (int i1=i-vis.DivY*2;i1<i+size/2+vis.DivX*2;i1++)
+							for (int j1=j-vis.DivX*2;j1<j+size/2+vis.DivY*2;j1++)
+								mat[i1][j1]=0;						
+						b3=false;
+						strelnul=false;
+						KoorVis.DivX=-15;
+						KoorVis.DivY=-15;
+						glVertex2f(-15,-15);
+						}	
+			if (b3) 
+			{
+				KoorVis.DivX+=vis.DivX;
+				KoorVis.DivY+=vis.DivY;
+				glVertex2f(KoorVis.DivX,KoorVis.DivY);
+			}	
+		}
+		else 
+
+		{
+			for (int i=KoorVis.DivX-vis.DivX; i>=KoorVis.DivX; i--)
+				for(int j=KoorVis.DivY-vis.DivY;j>=KoorVis.DivY; j--)
+					if (mat[i][j]!=0 && b3)
+						if (mat[i][j]==1) PopalVTank(i,j,b3,mas);
+						else
+					{
+						for (int i1=i-vis.DivY*2;i1>i-size/2+2*vis.DivX;i1--)
+							for (int j1=j-vis.DivX*2;j1>j-size/2+vis.DivY*2;j1--)
+								mat[i1][j1]=0;
+						b3=false;
+						strelnul=false;
+						KoorVis.DivX=-15;
+						KoorVis.DivY=-15;
+						glVertex2f(-15,-15);
+					}
+			if (b3) 
+			{
+				KoorVis.DivX+=vis.DivX;
+				KoorVis.DivY+=vis.DivY;
+				glVertex2f(KoorVis.DivX,KoorVis.DivY);
+			}
+		}
+		glEnd;
+	}
+	bool moj(char p)				
+	{
+		switch (p)
+		{
+		case 'w': 
+			for (int i=min.DivX; i<=max.DivX;i++)
+				if (mat[i][max.DivY+1]!=0)
+					return false;
+			return true;
+		case 'd':
+			for (int i=min.DivY; i<=max.DivY;i++)
+				if	(mat[max.DivX+1][i]!=0)
+					return false;
+			return true;
+		case 's':
+			for (int i=min.DivX; i<=max.DivX;i++)
+				if (mat[i][min.DivY-1]!=0)
+					return false;
+			return true;
+		case 'a':
+			for (int i=min.DivY; i<=max.DivY;i++)
+				if	(mat[min.DivX-1][i]!=0)
+					return false;
+			return true;		
+		default:
+			return false;
+		}
+	}
+	void Verx()
+	{
+	
+	glBegin(GL_POINTS);//строим по точкам
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY+i);
+			glVertex2f(po.DivX-j+size/2,po.DivY+i);
+		}
+	}
+//Нижняя половина
+	for (int i=0;i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY-i);
+			glVertex2f(po.DivX-j+size/2,po.DivY-i);
+		}
+	}
+//Крышки гусеницы
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY+i);
+		glVertex2f(po.DivX-3+size/2,po.DivY+i);
+	}
+
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY-i);
+		glVertex2f(po.DivX-3+size/2,po.DivY-i);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX+4-size/2,po.DivY-size/2+i-1);
+		glVertex2f(po.DivX-4+size/2,po.DivY-size/2+i-1);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX-j+size/2,po.DivY+i-size/2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX,po.DivY+i);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+}
+	void Prava()//в права
+{
+	glBegin(GL_POINTS);//строим по точкам 
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+i,po.DivY+j-size/2);
+			glVertex2f(po.DivX+i,po.DivY-j+size/2);
+		}
+	}
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX-i,po.DivY+j-size/2);
+			glVertex2f(po.DivX-i,po.DivY-j+size/2);
+		}
+	}
+
+//Крышки гусеницы
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX+i,po.DivY+3-size/2);
+		glVertex2f(po.DivX+i,po.DivY-3+size/2);
+	}
+
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX-i,po.DivY+3-size/2);
+		glVertex2f(po.DivX-i,po.DivY-3+size/2);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX-size/2+i-1,po.DivY+4-size/2);
+		glVertex2f(po.DivX-size/2+i-1,po.DivY-4+size/2);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX+i-size/2,po.DivY-j+size/2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX+i,po.DivY);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+
+}
+	void Vniz()
+{
+	glBegin(GL_POINTS);//строим по точкам 
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY+i);
+			glVertex2f(po.DivX-j+size/2,po.DivY+i);
+		}
+	}
+//Нижняя половина
+	for (int i=0;i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY-i);
+			glVertex2f(po.DivX-j+size/2,po.DivY-i);
+		}
+	}
+//Крышки гусеницы
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY+i);
+		glVertex2f(po.DivX-3+size/2,po.DivY+i);
+	}
+
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY-i);
+		glVertex2f(po.DivX-3+size/2,po.DivY-i);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX+4-size/2,po.DivY-size/2+i+1);
+		glVertex2f(po.DivX-4+size/2,po.DivY-size/2+i+1);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX-j+size/2,po.DivY+i-size/2+2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX,po.DivY-i);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+}
+	void Vlevo()//в права
+{
+	glBegin(GL_POINTS);//строим по точкам 
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+i,po.DivY+j-size/2);
+			glVertex2f(po.DivX+i,po.DivY-j+size/2);
+		}
+	}
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX-i,po.DivY+j-size/2);
+			glVertex2f(po.DivX-i,po.DivY-j+size/2);
+		}
+	}
+
+//Крышки гусеницы
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX+i,po.DivY+3-size/2);
+		glVertex2f(po.DivX+i,po.DivY-3+size/2);
+	}
+
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX-i,po.DivY+3-size/2);
+		glVertex2f(po.DivX-i,po.DivY-3+size/2);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX-size/2+i+1,po.DivY+4-size/2);
+		glVertex2f(po.DivX-size/2+i+1,po.DivY-4+size/2);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX+i-size/2+2,po.DivY-j+size/2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX-i,po.DivY);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+}
+	public:
+	void dvig(char p,bool &b1)
+	{
+		if (p=='a') {b1=false; Vlevo();}
+		else if (p=='s') {b1=false; Vniz();}
+		else if (p=='d') {b1=false; Prava();}
+		else if (p=='w') {b1=false; Verx();}
+	}
+	void proig(char p,bool &b1, vector <tanks> &mas)
+	{
+		cout << min.DivX << endl;
+		if (b2 && !strelnul) vistrel(p);
+		else b2=false;
+		if (strelnul) polet(mas);
+		if (b1 && moj(p))
+		{
+			if (p=='w' && raz(max.DivY,600))
+			{ 
+				for (int i=min.DivX; i<max.DivX;i++)
+					for (int j=min.DivY; j<max.DivY;j++)
+						mat[i][j]=0;
+				po.DivY++; 
+				max.DivY++;
+				min.DivY++;
+				b1=false;
+				Verx();
+			}
+			else if (p=='d' && raz(max.DivX,800))
+			{
+				for (int i=min.DivX; i<max.DivX;i++)
+					for (int j=min.DivY; j<max.DivY;j++)
+						mat[i][j]=0;
+				b1=false;
+				po.DivX++; 
+				max.DivX++;
+				min.DivX++;
+				Prava();
+			}
+			else if (p=='s' && raz(min.DivY,0)) 
+			{
+				for (int i=min.DivX; i<max.DivX;i++)
+					for (int j=min.DivY; j<max.DivY;j++)
+						mat[i][j]=0;
+				b1=false;
+				min.DivY--;
+				max.DivY--;
+				po.DivY--;
+				Vniz();
+			}
+			else if (p=='a' && raz(min.DivX,0))
+			{		
+				for (int i=min.DivX; i<max.DivX;i++)
+					for (int j=min.DivY; j<max.DivY;j++)
+						mat[i][j]=0;
+				b1=false;
+				min.DivX--;
+				max.DivX--;
+				po.DivX--;
+				Vlevo();
+			}
+			else dvig(p,b1);
+		}
+		else dvig(p,b1);
+	}
+};
+class IgrovoiProcess{ 
+
+};
+
+tanks *poq = (tanks*) operator new (sizeof tanks* maxi);
+vector <tanks> mas;
+	
+
+void postroenie(){
+	glBegin(GL_POINTS);
+	glColor3f(0.7, 0.0, 0.0);
+		for (int i=0;i<600; i++)
+			for(int j=0;j<800;j++)
+				if (mat[j][i]==2) glVertex2f(j,i); 
+	glEnd;
+}
+
+
+char vibor(tanks poq,int i){
+	if (poq.po.DivX<=mas[0].max.DivX && poq.po.DivX>=mas[0].min.DivX)	
+		if (poq.po.DivY>mas[0].po.DivY)
+		{
+			b2=true;
+			return 's';
+		}
+		else {
+			b2=true;
+			return 'w';
+		}
+	else if (poq.po.DivY<=mas[0].max.DivY && poq.po.DivY>=mas[0].min.DivY)
+		if (poq.po.DivX>mas[0].po.DivX)
+		{
+			b2=true;
+			return 'a';
+		}
+		else
+		{ 
+			b2=true;
+			return 'd';
+		}
+	srand(time(NULL));
+	//int x=(i*rand())%4;
+	if (i%2==0) i++;
+	int z=rand()%4;
+	int y=rand()%4;
+	int x = (z+y)*i%4;
+	switch (x)
+	{
+		case 0:
+			for (int i=poq.min.DivX-1;i>0;i--) 
+				if (mat[i][poq.po.DivY]==1) { b2=false; return 'a';}
+			b2=true;
+			return 'a';
+		case 1:
+			for (int i=poq.max.DivX+1;i<800;i++) 
+				if (mat[i][poq.po.DivY]==1) { b2=false; return 'd';}
+			b2=true;
+			return 'd';
+		case 2:
+			for (int i=poq.min.DivY-1;i>0;i--) 
+				if (mat[poq.po.DivX][i]==1) { b2=false; return 's';}
+			b2=true;
+			return 's';
+		case 3:
+			for (int i=poq.max.DivY+1;i<800;i++) 
+				if (mat[poq.po.DivX][i]==1) { b2=false; return 'w';}
+			b2=true;
+			return 'w';		
+	}
+	
+}
+
+void Display() 
+{
+
+/*	if (poq=fals) new (&poq[0]) tanks(20,30);
+	new (&poq[1]) tanks(500,500);
+	new (&poq[2]) tanks(600,550);*/
+
+	glClear(GL_COLOR_BUFFER_BIT);
+	postroenie();
+	glColor3f(0.0, 1.0, 0.0);
+	bool b4=true;
+	if (b) (mas[0].proig(p,b1,mas));
+	else {glBegin(GL_POINTS); glEnd();}
+	glColor3b(0,0,0);
+	if (b) (mas[1].proig(vibor(mas[1],1),b4,mas));
+	else {glBegin(GL_POINTS); glEnd();}
+	b4=true;
+	if (b) (mas[2].proig(vibor(mas[2],2),b4,mas));
+	else {glBegin(GL_POINTS); glEnd();}
+	b2=false;
+	glutSwapBuffers();
+
+}
+
+
+void keyboard(unsigned char key, int x,int y)
+{
+	switch(key)
+	{
+	case 'a':
+		p='a';
+		b1=true;
+		break;
+	case 'w':
+		p='w';
+		b1=true;
+		break;
+	case 'd':
+		p='d';
+		b1=true;
+		break;
+	case 's':
+		p='s';
+		b1=true;
+		break;
+	case 'e':
+		b2=true;
+		break;
+	}
+}
+
+void timer(int){
+	Display();
+	glutTimerFunc(1,timer,1);
+}
+
+int main(int argc, char ** argv)
+{
+	setlocale (LC_ALL, "Russian");
+//	srand(time(NULL));
+/*	do
+	{
+		cin >> tank;
+	} while (tank>4 && tank<0);  
+	for (int i=0;i<tank;i++)
+		if (i=0) new (&poq [i]) tanks (30, 30);
+		else 
+	int max=3;*/
+	for (int i=0; i<800; i++)
+		for (int j=0; j<600;j++)
+			mat[i][j]=0;
+	for (int i=0;i<600; i++)
+		for (int j=180;j<201;j++)
+	{	
+		mat[j][i]=2;
+	}
+	for (int i=200;i<600; i++)
+		for (int j=60;j<200;j++)
+	{	
+		mat[j][i]=2;
+	}
+	new (&poq[0]) tanks(20,30);
+	new (&poq[1]) tanks(500,500);
+	new (&poq[2]) tanks(600,550);
+/*	new (&poq[3]) tanks(700,550);*/
+	mas.push_back(poq[0]);
+	mas.push_back(poq[1]);
+	mas.push_back(poq[2]);
+/*	mas.push_back(poq[3]);*/
+	//	tanks *poq = (tanks*)operator new (sizeof tanks* max); //выделяем память под мссив объектов размером MAX
+//	poq[0].proig('w');
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowSize(800, 600);
+	glutInitWindowPosition(20, 100);
+	glutCreateWindow("Tanks");
+	glClearColor(1,0.4,0.4,1.0);
+	glMatrixMode(GL_PROJECTION);	
+	glLoadIdentity();
+	glOrtho(0,800,0,600,-1,1);
+	glutDisplayFunc(Display);
+	glutKeyboardFunc(keyboard);
+	timer(0);
+	glutMainLoop();
+}
