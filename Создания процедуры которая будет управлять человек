@@ -1,0 +1,25 @@
+void keyboard(unsigned char key, int x,int y)
+{
+	switch(key)
+	{
+	case 'a':
+		p='a';
+		b1=true;
+		break;
+	case 'w':
+		p='w';
+		b1=true;
+		break;
+	case 'd':
+		p='d';
+		b1=true;
+		break;
+	case 's':
+		p='s';
+		b1=true;
+		break;
+	case 'e':
+		b2=true;
+		break;
+	}
+}
