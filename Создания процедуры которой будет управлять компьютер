@@ -1,0 +1,53 @@
+char vibor(tanks poq,int i){
+	if (poq.po.DivX<=mas[0].max.DivX && poq.po.DivX>=mas[0].min.DivX)	
+		if (poq.po.DivY>mas[0].po.DivY)
+		{
+			b2=true;
+			return 's';
+		}
+		else {
+			b2=true;
+			return 'w';
+		}
+	else if (poq.po.DivY<=mas[0].max.DivY && poq.po.DivY>=mas[0].min.DivY)
+		if (poq.po.DivX>mas[0].po.DivX)
+		{
+			b2=true;
+			return 'a';
+		}
+		else
+		{ 
+			b2=true;
+			return 'd';
+		}
+	srand(time(NULL));
+	//int x=(i*rand())%4;
+	if (i%2==0) i++;
+	int z=rand()%4;
+	int y=rand()%4;
+	int x = (z+y)*i%4;
+	switch (x)
+	{
+		case 0:
+			for (int i=poq.min.DivX-1;i>0;i--) 
+				if (mat[i][poq.po.DivY]==1) { b2=false; return 'a';}
+			b2=true;
+			return 'a';
+		case 1:
+			for (int i=poq.max.DivX+1;i<800;i++) 
+				if (mat[i][poq.po.DivY]==1) { b2=false; return 'd';}
+			b2=true;
+			return 'd';
+		case 2:
+			for (int i=poq.min.DivY-1;i>0;i--) 
+				if (mat[poq.po.DivX][i]==1) { b2=false; return 's';}
+			b2=true;
+			return 's';
+		case 3:
+			for (int i=poq.max.DivY+1;i<800;i++) 
+				if (mat[poq.po.DivX][i]==1) { b2=false; return 'w';}
+			b2=true;
+			return 'w';		
+	}
+	
+}
