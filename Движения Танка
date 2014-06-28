@@ -1,0 +1,200 @@
+	void Verx()
+	{
+	
+	glBegin(GL_POINTS);//строим по точкам
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY+i);
+			glVertex2f(po.DivX-j+size/2,po.DivY+i);
+		}
+	}
+//Нижняя половина
+	for (int i=0;i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY-i);
+			glVertex2f(po.DivX-j+size/2,po.DivY-i);
+		}
+	}
+//Крышки гусеницы
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY+i);
+		glVertex2f(po.DivX-3+size/2,po.DivY+i);
+	}
+
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY-i);
+		glVertex2f(po.DivX-3+size/2,po.DivY-i);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX+4-size/2,po.DivY-size/2+i-1);
+		glVertex2f(po.DivX-4+size/2,po.DivY-size/2+i-1);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX-j+size/2,po.DivY+i-size/2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX,po.DivY+i);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+}
+	void Prava()//в права
+{
+	glBegin(GL_POINTS);//строим по точкам 
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+i,po.DivY+j-size/2);
+			glVertex2f(po.DivX+i,po.DivY-j+size/2);
+		}
+	}
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX-i,po.DivY+j-size/2);
+			glVertex2f(po.DivX-i,po.DivY-j+size/2);
+		}
+	}
+
+//Крышки гусеницы
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX+i,po.DivY+3-size/2);
+		glVertex2f(po.DivX+i,po.DivY-3+size/2);
+	}
+
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX-i,po.DivY+3-size/2);
+		glVertex2f(po.DivX-i,po.DivY-3+size/2);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX-size/2+i-1,po.DivY+4-size/2);
+		glVertex2f(po.DivX-size/2+i-1,po.DivY-4+size/2);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX+i-size/2,po.DivY-j+size/2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX+i,po.DivY);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+
+}
+	void Vniz()
+{
+	glBegin(GL_POINTS);//строим по точкам 
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY+i);
+			glVertex2f(po.DivX-j+size/2,po.DivY+i);
+		}
+	}
+//Нижняя половина
+	for (int i=0;i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+j-size/2,po.DivY-i);
+			glVertex2f(po.DivX-j+size/2,po.DivY-i);
+		}
+	}
+//Крышки гусеницы
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY+i);
+		glVertex2f(po.DivX-3+size/2,po.DivY+i);
+	}
+
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX+3-size/2,po.DivY-i);
+		glVertex2f(po.DivX-3+size/2,po.DivY-i);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX+4-size/2,po.DivY-size/2+i+1);
+		glVertex2f(po.DivX-4+size/2,po.DivY-size/2+i+1);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX-j+size/2,po.DivY+i-size/2+2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX,po.DivY-i);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+}
+	void Vlevo()//в права
+{
+	glBegin(GL_POINTS);//строим по точкам 
+//гусеницы
+	//верхняя половина 
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX+i,po.DivY+j-size/2);
+			glVertex2f(po.DivX+i,po.DivY-j+size/2);
+		}
+	}
+
+	for (int i=0; i<=size/2-2;i+=1){
+		for (int j=0;j<3;j++){
+			glVertex2f(po.DivX-i,po.DivY+j-size/2);
+			glVertex2f(po.DivX-i,po.DivY-j+size/2);
+		}
+	}
+
+//Крышки гусеницы
+	for (int i=0;i<=size/2-2; ++i){
+		glVertex2f(po.DivX+i,po.DivY+3-size/2);
+		glVertex2f(po.DivX+i,po.DivY-3+size/2);
+	}
+
+	for (int i=0;i<=size/2-6; ++i){
+		glVertex2f(po.DivX-i,po.DivY+3-size/2);
+		glVertex2f(po.DivX-i,po.DivY-3+size/2);
+	}
+//Соединщие штуки
+	for (int i=4;i<=size-4;++i){
+		glVertex2f(po.DivX-size/2+i+1,po.DivY+4-size/2);
+		glVertex2f(po.DivX-size/2+i+1,po.DivY-4+size/2);
+	}
+//Тело Танка
+	for (int i=3; i<=size-5; ++i)
+		for (int j=5;j<=size-5;++j)
+			glVertex2f(po.DivX+i-size/2+2,po.DivY-j+size/2);
+	
+	for (int i=1;i<=size/2;++i)
+		glVertex2f(po.DivX-i,po.DivY);
+	for (int i=min.DivX;i<max.DivX;i++)
+		for(int j=min.DivY;j<max.DivY;j++)
+			mat[i][j]=1;
+	
+	glEnd();
+}
+	public:
+	void dvig(char p,bool &b1)
+	{
+		if (p=='a') {b1=false; Vlevo();}
+		else if (p=='s') {b1=false; Vniz();}
+		else if (p=='d') {b1=false; Prava();}
+		else if (p=='w') {b1=false; Verx();}
+	}
